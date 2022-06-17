@@ -1,3 +1,3 @@
 FROM nginx:alpine
 
-ADD artifacts /usr/share/nginx/html/
+ADD docfx/api /usr/share/nginx/html/
