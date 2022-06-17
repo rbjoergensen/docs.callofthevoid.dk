@@ -89,6 +89,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request'
     needs: 
+      - calculate-version
       - docker_build
     steps:
       - uses: actions/checkout@v3
