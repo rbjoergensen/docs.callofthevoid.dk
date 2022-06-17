@@ -30,7 +30,7 @@ jobs:
           configFilePath: gitversion.yml
 
   docfx_build:
-    name: Build DocFX Site
+    name: Build DocFX site
     runs-on: windows-latest
     needs: 
       - calculate-version
@@ -41,17 +41,20 @@ jobs:
       - name: Install DocFX
         run: choco install -y docfx
 
-      - name: Initalize DocFX
-        run: docfx init -q --output ./docfx
+      - name: debug
+        run: ls -la ${{ github.workspace }}
+
+      - name: Build DocFX
+        run: docfx ${{ github.workspace }}/docfx/docfx.json
 
       - uses: actions/upload-artifact@v3
         name: Upload artifact
         with:
           name: site_${{ needs.calculate-version.outputs.semVer }}
-          path: ./docfx/_site/
+          path: ${{ github.workspace }}/docfx/_site/
 
   docker_build:
-    name: Build Docker
+    name: Build Docker image
     runs-on: ubuntu-latest
     needs: 
       - docfx_build
