@@ -1,0 +1,14 @@
+# https://www.mkdocs.org/user-guide/configuration/#documentation-layout
+site_name: CallOfTheVoid
+site_url: https://docs.callofthevoid.dk
+repo_url: https://github.com/rbjoergensen
+edit_uri: ""
+# Third-party themes at https://github.com/mkdocs/mkdocs/wiki/MkDocs-Themes
+theme: material # https://github.com/squidfunk/mkdocs-material
+nav:
+  - Introduction: 'index.md'
+  - 'tf-s3-bucket':
+    - 'Link(GitHub)': 'https://github.com/rbjoergensen/tf-s3-bucket'
+    - 'Readme.md': 'tf-s3-bucket/Readme.md'
+  - 'Issue Tracker':
+    - 'https://example.com/'

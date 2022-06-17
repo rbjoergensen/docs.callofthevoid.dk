@@ -29,36 +29,50 @@ jobs:
           useConfigFile: true
           configFilePath: gitversion.yml
 
-  docfx_build:
-    name: Build DocFX site
-    runs-on: windows-latest
+  site_build:
+    name: Build site
+    runs-on: ubuntu-latest
     needs: 
       - calculate-version
     steps:
       - uses: actions/checkout@v3
         name: Checkout code
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+          architecture: x64
+
+      - name: Install MkDocs
+        run: pip install -r mkdocs/requirements.txt
+
+      - name: Build MkDocs site
+        run: |
+          cd ${{ github.workspace }}/mkdocs
+          mkdocs build
       
-      - name: Install DocFX
-        run: choco install -y docfx
+      #- name: Install DocFX
+      #  run: choco install -y docfx
 
-      - name: Make Readme.md homepage
-        run: Move-Item -Path ${{ github.workspace }}/Readme.md -Destination ${{ github.workspace }}/docfx/index.md -Force
+      #- name: Make Readme.md homepage
+      #  run: Move-Item -Path ${{ github.workspace }}/Readme.md -Destination ${{ github.workspace }}/docfx/index.md -Force
 
-      - name: Build DocFX
-        run: docfx ${{ github.workspace }}/docfx/docfx.json
+      #- name: Build DocFX
+      #  run: docfx ${{ github.workspace }}/docfx/docfx.json
 
       - uses: actions/upload-artifact@v3
         name: Upload artifact
         with:
           name: site_${{ needs.calculate-version.outputs.semVer }}
-          path: ${{ github.workspace }}/docfx/_site/
+          path: ${{ github.workspace }}/mkdocs/site/
+          #path: ${{ github.workspace }}/docfx/_site/
 
   docker_build:
     name: Build Docker image
     runs-on: ubuntu-latest
     needs: 
       - calculate-version
-      - docfx_build
+      - site_build
     steps:
       - uses: actions/checkout@v3
         name: Checkout code

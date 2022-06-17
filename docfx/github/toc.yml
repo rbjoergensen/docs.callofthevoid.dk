@@ -1,2 +1,8 @@
 - name: Home
   href: index.md
+  items:
+    - name: Test
+      href: test/test.md
+      items:
+        - name: Test/something.md
+          href: test/test.md

@@ -4,7 +4,7 @@
       {
         "files": [
           "github/**.yml",
-          "github/index.md"
+          "github/**.md"
         ]
       },
       {
