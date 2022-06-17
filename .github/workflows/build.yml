@@ -72,7 +72,7 @@ jobs:
         run: ls -la
 
       - name: debug artifacts
-        run: ls -la ${{ github.workspace }}/artifacts
+        run: ls -la artifacts
 
       - name: Docker Login
         uses: docker/login-action@v1
