@@ -41,6 +41,9 @@ jobs:
       - name: Install DocFX
         run: choco install -y docfx
 
+      - name: Make Readme.md homepage
+        run: Move-Item -Path ${{ github.workspace }}/Readme.md -Destination ${{ github.workspace }}/docfx/index.md -Force
+
       - name: Build DocFX
         run: docfx ${{ github.workspace }}/docfx/docfx.json
 
