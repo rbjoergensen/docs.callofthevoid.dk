@@ -1,3 +1,3 @@
 FROM nginx:alpine
 
-COPY artifacts /usr/share/nginx/html/
+ADD artifacts /usr/share/nginx/html/
