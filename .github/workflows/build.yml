@@ -84,6 +84,13 @@ jobs:
             docker.pkg.github.com/rbjoergensen/docs.callofthevoid.dk/docs.callofthevoid.dk:${{ needs.calculate-version.outputs.semVer }}
           context: ${{ github.workspace }}
 
+      - name: Repository dispatch
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.DOCKER_DISPATCH_TOKEN }}
+          repository: rbjoergensen/home-server
+          event-type: docker-build
+
   tag:
     name: Tag
     runs-on: ubuntu-latest
