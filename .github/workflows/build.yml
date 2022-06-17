@@ -71,12 +71,16 @@ jobs:
         with:
           name: site_${{ needs.calculate-version.outputs.semVer }}
           path: ${{ github.workspace }}/site
+      
+      - name: debug currentdir
+        run: ls -la
           
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
           push: true
           tags: docker.pkg.github.com/rbjoergensen/docs.callofthevoid.dk/docs.callofthevoid.dk:${{ needs.calculate-version.outputs.semVer }}
+          context: ${{ github.workspace }}
 
   tag:
     name: Tag
