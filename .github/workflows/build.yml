@@ -42,7 +42,7 @@ jobs:
         run: choco install -y docfx
 
       - name: debug
-        run: ls -la ${{ github.workspace }}
+        run: get-childitem -recurse ${{ github.workspace }}
 
       - name: Build DocFX
         run: docfx ${{ github.workspace }}/docfx/docfx.json
