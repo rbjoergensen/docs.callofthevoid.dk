@@ -1,1 +1,94 @@
-#
+name: Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  calculate-version:
+    name: Calculate Version
+    runs-on: ubuntu-latest
+    outputs:
+      semVer: ${{ steps.gitversion.outputs.fullSemVer }}
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout code
+        with:
+          fetch-depth: 0
+
+      - uses: gittools/actions/gitversion/setup@v0.9.7
+        name: Install GitVersion
+        with:
+          versionSpec: '5.x'
+
+      - uses: gittools/actions/gitversion/execute@v0.9.7
+        name: Determine Version
+        id: gitversion
+        with:
+          useConfigFile: true
+          configFilePath: gitversion.yml
+
+  docfx_build:
+    name: Build DocFX Site
+    runs-on: windows-latest
+    needs: 
+      - calculate-version
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout code
+      
+      - name: Install DocFX
+        run: choco install -y docfx
+
+      - name: Initalize DocFX
+        run: docfx init -q --output ./docfx
+
+      - uses: actions/upload-artifact@v3
+        name: Upload artifact
+        with:
+          name: site_${{ needs.calculate-version.outputs.semVer }}
+          path: ./docfx/_site/
+
+  docker_build:
+    name: Build Docker
+    runs-on: ubuntu-latest
+    needs: 
+      - docfx_build
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout code
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: site_${{ needs.calculate-version.outputs.semVer }}
+          path: /artifacts
+
+      - name: Docker Login
+        uses: docker/login-action@v1
+        with:
+          registry: docker.pkg.github.com
+          username: rbjoergensen
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: docker.pkg.github.com/rbjoergensen/docs.callofthevoid.dk/docs.callofthevoid.dk:${{ needs.calculate-version.outputs.semVer }}
+
+  tag:
+    name: Tag
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+    needs: 
+      - docker_build
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout code
+
+      - name: Create tag
+        run: |
+          git tag ${{ needs.calculate-version.outputs.semVer }}
+          git push origin ${{ needs.calculate-version.outputs.semVer }}
