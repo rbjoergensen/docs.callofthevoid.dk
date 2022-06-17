@@ -1,4 +1,4 @@
-# Documentation
+# Introduction
 Documentation based on markdown files purposefully written for this site and imported from git repositories.<br /><br />
 Work in progress...
 ## Todo
