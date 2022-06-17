@@ -6,9 +6,10 @@ edit_uri: ""
 # Third-party themes at https://github.com/mkdocs/mkdocs/wiki/MkDocs-Themes
 theme: material # https://github.com/squidfunk/mkdocs-material
 nav:
-  - Introduction: 'index.md'
-  - 'tf-s3-bucket':
-    - 'Link(GitHub)': 'https://github.com/rbjoergensen/tf-s3-bucket'
-    - 'Readme.md': 'tf-s3-bucket/Readme.md'
-  - 'Issue Tracker':
-    - 'https://example.com/'
+  - '<b>Introduction</b>': 'index.md'
+  - '<b>GitHub</b>': 
+    - '<b>tf-s3-bucket</b>':
+      - 'Readme.md': 'tf-s3-bucket/Readme.md'
+      - '<span style="font-style: italic;">Link(GitHub)</span>': 'https://github.com/rbjoergensen/tf-s3-bucket'
+  - '<b>Articles</b>': 
+    - 'Awesome Sauce': 'articles/awesomesauce.md'
