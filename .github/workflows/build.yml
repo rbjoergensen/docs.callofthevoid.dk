@@ -63,7 +63,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: site_${{ needs.calculate-version.outputs.semVer }}
-          path: ${{ github.workspace }}/artifacts
+          path: ${{ github.workspace }}/site
 
       - name: debug workspace
         run: ls -la ${{ github.workspace }}
