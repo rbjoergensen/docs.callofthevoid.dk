@@ -65,8 +65,14 @@ jobs:
           name: site_${{ needs.calculate-version.outputs.semVer }}
           path: ${{ github.workspace }}/artifacts
 
-      - name: debug
+      - name: debug workspace
         run: ls -la ${{ github.workspace }}
+
+      - name: debug currentdir
+        run: ls -la
+
+      - name: debug artifacts
+        run: ls -la ${{ github.workspace }}/artifacts
 
       - name: Docker Login
         uses: docker/login-action@v1
