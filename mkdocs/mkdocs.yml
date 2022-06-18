@@ -9,7 +9,10 @@ nav:
   - '<b>Introduction</b>': 'index.md'
   - '<b>GitHub</b>': 
     - '<b>tf-s3-bucket</b>':
-      - 'Readme.md': 'tf-s3-bucket/Readme.md'
+      - 'Readme.md': 'github/tf-s3-bucket/Readme.md'
       - '<span style="font-style: italic;">Link(GitHub)</span>': 'https://github.com/rbjoergensen/tf-s3-bucket'
+    - '<b>terraform-workspaces</b>':
+      - 'Readme.md': 'github/terraform-workspaces/Readme.md'
+      - '<span style="font-style: italic;">Link(GitHub)</span>': 'https://github.com/rbjoergensen/terraform-workspaces'
   - '<b>Articles</b>': 
     - 'Awesome Sauce': 'articles/awesomesauce.md'
