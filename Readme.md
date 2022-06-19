@@ -9,3 +9,4 @@ Work in progress...
 - Add dispatch triggers to build automatically when files update in a repository
 - Add files from GitHub to the site when building
 - Find fix for links that point to placeholders
+- Add crontimer for docs build
