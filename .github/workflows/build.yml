@@ -67,6 +67,9 @@ jobs:
         with:
           name: docsfinder-${{ needs.calculate-version.outputs.semVer }}-linux
           path: ${{ github.workspace }}/tools
+      
+      - name: Make docsfinder executeable
+        run: chmod +x ${{ github.workspace }}/tools/docsfinder
 
       - uses: actions/setup-python@v4
         with:
