@@ -50,13 +50,18 @@ func checkRate(flags Flags) (RateLimit, error) {
 
 type RateLimit struct {
 	Resources Resources `json:"resources"`
+	Rate      Rate      `json:"rate"`
 }
 
 type Resources struct {
-	Search Search `json:"search"`
+	Search              Rate `json:"search"`
+	Core                Rate `json:"core"`
+	GraphQL             Rate `json:"graphql"`
+	IntegrationManifest Rate `json:"integration_manifest"`
+	CodeScanningUpload  Rate `json:"code_scanning_upload"`
 }
 
-type Search struct {
+type Rate struct {
 	Limit     int `json:"limit"`
 	Remaining int `json:"remaining"`
 	Reset     int `json:"reset"`

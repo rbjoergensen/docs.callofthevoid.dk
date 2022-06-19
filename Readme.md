@@ -6,6 +6,7 @@ Work in progress...
 - Fix casing for readme files in different formats
 - Refactor documentation so it doesn't look too shitty
 - Add yaml library for writing mkdocs.yml file instead of appending
+- Support categories in docs configuration
 ## Done
 - Add dispatch triggers to build automatically when files update in a repository
 - Add files from GitHub to the site when building

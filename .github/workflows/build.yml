@@ -94,6 +94,7 @@ jobs:
           --account rbjoergensen
           --exclude docs.callofthevoid.dk
           --output mkdocs/docs/github
+          --mkdocs-config mkdocs/mkdocs.yml
 
       - name: Build MkDocs site
         run: |

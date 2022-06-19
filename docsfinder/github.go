@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -20,8 +21,7 @@ func downloadGitHubDocs(flags Flags) {
 	}
 
 	// Prepare writer to append to mkdocs config
-	mkdocsConfig := "mkdocs/mkdocs.yml"
-	f, err := os.OpenFile(mkdocsConfig, os.O_APPEND|os.O_WRONLY, 0755)
+	f, err := os.OpenFile(flags.MkdocsConfig, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0755)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -41,21 +41,70 @@ func downloadGitHubDocs(flags Flags) {
 			rate, err = checkRate(flags)
 		}
 
-		search, err := CodeSearch(flags, repository)
+		configSearch, err := CodeSearch(flags, repository, "filename:docs.yml")
 		if err != nil {
 			log.Fatal(err)
 		}
 
+		// GitHub rate limiting throws 403 if there's more than 30 calls per minute
+		time.Sleep(2 * time.Second)
+
+		var containsConfig = false
+		var docsConfig DocsConfig
+
+		for _, result := range configSearch {
+			if result.Path == ".github/docs.yml" {
+				content, err := GetContent(flags, result, repository)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				contentBytes, err := base64.StdEncoding.DecodeString(content)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				err = yaml.Unmarshal(contentBytes, &docsConfig)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				containsConfig = true
+			}
+		}
+
+		mdSearch, err := CodeSearch(flags, repository, "extension:md")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// GitHub rate limiting throws 403 if there's more than 30 calls per minute
+		time.Sleep(2 * time.Second)
+
+		if len(mdSearch) == 0 {
+			continue
+		}
+
+		// Value used later to determine if config should be
+		// added to the mkdocs.yml for the repository
 		var filesAdded int
+
+		// String containing the accumulated configuration
+		// that will be added to mkdocs.yml if applicable
 		var repositoryNav string
 
-		if len(search) != 0 {
+		if containsConfig {
+			repositoryNav += fmt.Sprintf(
+				"    - '<b>%s</b>':\n",
+				docsConfig.NavigatorName)
+		}
+		if !containsConfig {
 			repositoryNav += fmt.Sprintf(
 				"    - '<b>%s</b>':\n",
 				repository.Name)
 		}
 
-		for _, result := range search {
+		for _, result := range mdSearch {
 			if !strings.Contains(result.Path, "/") {
 				content, err := GetContent(flags, result, repository)
 				if err != nil {
@@ -82,20 +131,52 @@ func downloadGitHubDocs(flags Flags) {
 						log.Fatal(err)
 					}
 
-					repositoryNav += fmt.Sprintf(
-						"      - '%s': 'github/%s/%s'\n",
-						result.Name,
-						repository.Name,
-						result.Name)
+					if containsConfig {
+						var ruleFound = false
+						for _, file := range docsConfig.Files {
+							if file.File == result.Path {
+								repositoryNav += fmt.Sprintf(
+									"      - '%s': 'github/%s/%s'\n",
+									file.PrettyName,
+									repository.Name,
+									result.Name)
+							}
+
+							ruleFound = true
+						}
+
+						if !ruleFound {
+							repositoryNav += fmt.Sprintf(
+								"      - '%s': 'github/%s/%s'\n",
+								result.Name,
+								repository.Name,
+								result.Name)
+						}
+					}
+
+					if !containsConfig {
+						repositoryNav += fmt.Sprintf(
+							"      - '%s': 'github/%s/%s'\n",
+							result.Name,
+							repository.Name,
+							result.Name)
+					}
 				}
 			}
 		}
 
-		if len(search) != 0 {
-			repositoryLink := fmt.Sprintf(
-				"https://github.com/%s/%s",
-				flags.Account,
-				repository.Name)
+		repositoryLink := fmt.Sprintf(
+			"https://github.com/%s/%s",
+			flags.Account,
+			repository.Name)
+
+		if containsConfig && docsConfig.IncludeLink {
+			repositoryNav += fmt.Sprintf(
+				"      - '<span style=\"font-style: italic;\">Link(GitHub)</span>': '%s'\n",
+				repositoryLink)
+		}
+
+		if !containsConfig {
 			repositoryNav += fmt.Sprintf(
 				"      - '<span style=\"font-style: italic;\">Link(GitHub)</span>': '%s'\n",
 				repositoryLink)
@@ -113,6 +194,18 @@ func downloadGitHubDocs(flags Flags) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+type DocsConfig struct {
+	NavigatorName string     `yaml:"navigatorName"`
+	Category      string     `yaml:"category"`
+	IncludeLink   bool       `yaml:"includeLink"`
+	Files         []DocsFile `yaml:"files"`
+}
+
+type DocsFile struct {
+	File       string `yaml:"file"`
+	PrettyName string `yaml:"prettyName"`
 }
 
 func GetContent(flags Flags, file File, repository Repository) (string, error) {
@@ -161,8 +254,8 @@ type FileContent struct {
 	Content string `json:"content"`
 }
 
-func CodeSearch(flags Flags, repository Repository) ([]File, error) {
-	url := fmt.Sprintf("https://api.github.com/search/code?q=repo:%s+extension:md", repository.FullName)
+func CodeSearch(flags Flags, repository Repository, query string) ([]File, error) {
+	url := fmt.Sprintf("https://api.github.com/search/code?q=repo:%s+%s", repository.FullName, query)
 	client := http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 

@@ -35,6 +35,10 @@ func loadFlags() Flags {
 		"minimum-filesize",
 		300,
 		"The minimum filesize to download(byte length)")
+	mkdocsConfig := flag.String(
+		"mkdocs-config",
+		"mkdocs.yml",
+		"Output directory")
 
 	flag.Parse()
 
@@ -60,6 +64,7 @@ func loadFlags() Flags {
 		Exclusions:      exclusions,
 		Output:          *output,
 		MinimumFilesize: *minimumFilesize,
+		MkdocsConfig:    *mkdocsConfig,
 	}
 }
 
@@ -71,4 +76,5 @@ type Flags struct {
 	Exclusions      []string
 	Output          string
 	MinimumFilesize int
+	MkdocsConfig    string
 }
