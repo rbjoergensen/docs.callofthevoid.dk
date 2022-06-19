@@ -63,10 +63,10 @@ jobs:
       - uses: actions/checkout@v3
         name: Checkout code
 
-       uses: actions/download-artifact@v3
-       with:
-         name: docsfinder-${{ needs.calculate-version.outputs.semVer }}-linux
-         path: ${{ github.workspace }}
+      - uses: actions/download-artifact@v3
+        with:
+          name: docsfinder-${{ needs.calculate-version.outputs.semVer }}-linux
+          path: ${{ github.workspace }}
 
       - uses: actions/setup-python@v4
         with:
