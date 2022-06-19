@@ -83,11 +83,11 @@ jobs:
         run: cp ${{ github.workspace }}/Readme.md ${{ github.workspace }}/mkdocs/docs/index.md
 
       - name: Docsfinder download
-        run: | 
+        run: > 
           ${{ github.workspace }}/tools/docsfinder 
           --token ${{ secrets.DOCKER_DISPATCH_TOKEN }} 
           --account rbjoergensen 
-          --exclude docs.callofthevoid.dk
+          --exclude docs.callofthevoid.dk 
           --output mkdocs/docs/github
 
       - name: Build MkDocs site
