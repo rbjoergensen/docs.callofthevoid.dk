@@ -21,7 +21,7 @@ module "bucket" {
   }
   # Use v1 to use the latest build from major version v1
   # Use a specific tag to lock down the version to a specific commit such as v1.0.7
-  source = "git::https://github.com/rbjoergensen/tf-s3-bucket.git?ref=v1"
+  source = "git::https://github.com/rbjoergensen/terraform-s3.git?ref=v1"
   bucket_name = "callofthevoid-test-bucket"
 }
 ```

@@ -15,7 +15,18 @@ import (
 
 func downloadGitHubDocs(flags Flags) {
 	repositories, err := GetRepositories(flags)
+	if err != nil {
+		log.Fatal(err)
+	}
 
+	// Prepare writer to append to mkdocs config
+	mkdocsConfig := "../mkdocs/mkdocs.yml"
+	f, err := os.OpenFile(mkdocsConfig, os.O_APPEND, 0755)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = f.WriteString("\n  - '<b>GitHub</b>':\n")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -35,6 +46,15 @@ func downloadGitHubDocs(flags Flags) {
 			log.Fatal(err)
 		}
 
+		var filesAdded int
+		var repositoryNav string
+
+		if len(search) != 0 {
+			repositoryNav += fmt.Sprintf(
+				"    - '<b>%s</b>':\n",
+				repository.Name)
+		}
+
 		for _, result := range search {
 			if !strings.Contains(result.Path, "/") {
 				content, err := GetContent(flags, result, repository)
@@ -47,19 +67,51 @@ func downloadGitHubDocs(flags Flags) {
 					log.Fatal(err)
 				}
 
-				err = os.MkdirAll(fmt.Sprintf("%s/%s", flags.Output, repository.Name), 0755)
-				if err != nil {
-					log.Fatal(err)
-				}
+				if len(contentBytes) > flags.MinimumFilesize {
+					filesAdded++
 
-				location := fmt.Sprintf("%s/%s/%s", flags.Output, repository.Name, result.Name)
+					err = os.MkdirAll(fmt.Sprintf("%s/%s", flags.Output, repository.Name), 0755)
+					if err != nil {
+						log.Fatal(err)
+					}
 
-				err = os.WriteFile(location, contentBytes, 0644)
-				if err != nil {
-					log.Fatal(err)
+					location := fmt.Sprintf("%s/%s/%s", flags.Output, repository.Name, result.Name)
+
+					err = os.WriteFile(location, contentBytes, 0644)
+					if err != nil {
+						log.Fatal(err)
+					}
+
+					repositoryNav += fmt.Sprintf(
+						"      - '%s': 'github/%s/%s'\n",
+						result.Name,
+						repository.Name,
+						result.Name)
 				}
 			}
 		}
+
+		if len(search) != 0 {
+			repositoryLink := fmt.Sprintf(
+				"https://github.com/%s/%s",
+				flags.Account,
+				repository.Name)
+			repositoryNav += fmt.Sprintf(
+				"      - '<span style=\"font-style: italic;\">Link(GitHub)</span>': '%s'\n",
+				repositoryLink)
+		}
+
+		if filesAdded > 0 {
+			_, err = f.WriteString(repositoryNav)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+	}
+
+	err = f.Close()
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 

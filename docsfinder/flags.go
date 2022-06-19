@@ -31,6 +31,10 @@ func loadFlags() Flags {
 		"output",
 		"docs",
 		"Output directory")
+	minimumFilesize := flag.Int(
+		"minimum-filesize",
+		300,
+		"The minimum filesize to download(byte length)")
 
 	flag.Parse()
 
@@ -49,20 +53,22 @@ func loadFlags() Flags {
 	}
 
 	return Flags{
-		Token:          *tokenPtr,
-		Account:        *accountPtr,
-		SkipArchived:   *skipArchivedPtr,
-		IncludePrivate: *includePrivatePtr,
-		Exclusions:     exclusions,
-		Output:         *output,
+		Token:           *tokenPtr,
+		Account:         *accountPtr,
+		SkipArchived:    *skipArchivedPtr,
+		IncludePrivate:  *includePrivatePtr,
+		Exclusions:      exclusions,
+		Output:          *output,
+		MinimumFilesize: *minimumFilesize,
 	}
 }
 
 type Flags struct {
-	Token          string
-	Account        string
-	SkipArchived   bool
-	IncludePrivate bool
-	Exclusions     []string
-	Output         string
+	Token           string
+	Account         string
+	SkipArchived    bool
+	IncludePrivate  bool
+	Exclusions      []string
+	Output          string
+	MinimumFilesize int
 }
