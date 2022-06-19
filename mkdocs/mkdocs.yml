@@ -3,8 +3,22 @@ site_name: CallOfTheVoid
 site_url: https://docs.callofthevoid.dk
 repo_url: https://github.com/rbjoergensen
 edit_uri: ""
+extra:
+  # Hide the Made with Material for MkDocs notice
+  generator: false
+  #social:
+  #  - icon: fontawesome/brands/linkedin
+  #    link: https://www.linkedin.com/in/rasmus-bo-j%C3%B8rgensen-11798168/
 # Third-party themes at https://github.com/mkdocs/mkdocs/wiki/MkDocs-Themes
-theme: material # https://github.com/squidfunk/mkdocs-material
+theme: # https://github.com/squidfunk/mkdocs-material
+  name: material
+  palette:
+    accent: pink
+    scheme: slate
+    primary: teal
+  features:
+    - navigation.instant
+    - navigation.expand
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
