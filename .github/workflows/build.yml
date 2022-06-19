@@ -29,14 +29,44 @@ jobs:
           useConfigFile: true
           configFilePath: gitversion.yml
 
-  site_build:
-    name: Build site
+  docsfinder_build:
+    name: Build docsfinder
     runs-on: ubuntu-latest
     needs: 
       - calculate-version
     steps:
       - uses: actions/checkout@v3
         name: Checkout code
+
+      - uses: actions/setup-go@v3
+        name: Install Go
+        with:
+          go-version: '>=1.18.0'
+
+      - name: Build project
+        run: |
+          cd docsfinder
+          go build
+      - uses: actions/upload-artifact@v3
+        name: Upload artifact
+        with:
+          name: docsfinder-${{ needs.calculate-version.outputs.semVer }}-linux
+          path: docsfinder
+
+  site_build:
+    name: Build site
+    runs-on: ubuntu-latest
+    needs: 
+      - calculate-version
+      - docsfinder_build
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout code
+
+       uses: actions/download-artifact@v3
+       with:
+         name: docsfinder-${{ needs.calculate-version.outputs.semVer }}-linux
+         path: ${{ github.workspace }}
 
       - uses: actions/setup-python@v4
         with:
@@ -49,26 +79,24 @@ jobs:
       - name: Make Readme.md homepage
         run: cp ${{ github.workspace }}/Readme.md ${{ github.workspace }}/mkdocs/docs/index.md
 
+      - name: Docsfinder download
+        run: | 
+          ${{ github.workspace }}/docsfinder 
+          --token ${{ secrets.DOCKER_DISPATCH_TOKEN }} 
+          --account rbjoergensen 
+          --exclude docs.callofthevoid.dk
+          --output mkdocs/docs/github
+
       - name: Build MkDocs site
         run: |
           cd ${{ github.workspace }}/mkdocs
           mkdocs build
-      
-      #- name: Install DocFX
-      #  run: choco install -y docfx
-
-      #- name: Make Readme.md homepage
-      #  run: Move-Item -Path ${{ github.workspace }}/Readme.md -Destination ${{ github.workspace }}/docfx/index.md -Force
-
-      #- name: Build DocFX
-      #  run: docfx ${{ github.workspace }}/docfx/docfx.json
 
       - uses: actions/upload-artifact@v3
         name: Upload artifact
         with:
           name: site_${{ needs.calculate-version.outputs.semVer }}
           path: ${{ github.workspace }}/mkdocs/site/
-          #path: ${{ github.workspace }}/docfx/_site/
 
   docker_build:
     name: Build Docker image
