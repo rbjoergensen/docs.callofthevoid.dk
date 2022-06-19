@@ -5,6 +5,12 @@ repo_url: https://github.com/rbjoergensen
 edit_uri: ""
 # Third-party themes at https://github.com/mkdocs/mkdocs/wiki/MkDocs-Themes
 theme: material # https://github.com/squidfunk/mkdocs-material
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
 nav:
   - '<b>Introduction</b>': 'index.md'
   - '<b>Articles</b>': 
