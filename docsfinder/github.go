@@ -21,7 +21,7 @@ func downloadGitHubDocs(flags Flags) {
 
 	// Prepare writer to append to mkdocs config
 	mkdocsConfig := "mkdocs/mkdocs.yml"
-	f, err := os.OpenFile(mkdocsConfig, os.O_APPEND, 0755)
+	f, err := os.OpenFile(mkdocsConfig, os.O_APPEND|os.O_WRONLY, 0755)
 	if err != nil {
 		log.Fatal(err)
 	}
