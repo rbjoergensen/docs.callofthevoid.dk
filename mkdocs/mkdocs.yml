@@ -18,7 +18,8 @@ theme: # https://github.com/squidfunk/mkdocs-material
     primary: teal
   features:
     - navigation.instant
-    - navigation.expand
+    #- navigation.expand
+    - toc.integrate
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
