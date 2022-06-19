@@ -66,7 +66,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: docsfinder-${{ needs.calculate-version.outputs.semVer }}-linux
-          path: ${{ github.workspace }}
+          path: ${{ github.workspace }}/tools
 
       - uses: actions/setup-python@v4
         with:
@@ -81,7 +81,7 @@ jobs:
 
       - name: Docsfinder download
         run: | 
-          ${{ github.workspace }}/docsfinder 
+          ${{ github.workspace }}/tools/docsfinder 
           --token ${{ secrets.DOCKER_DISPATCH_TOKEN }} 
           --account rbjoergensen 
           --exclude docs.callofthevoid.dk
