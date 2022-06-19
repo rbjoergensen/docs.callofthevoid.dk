@@ -95,12 +95,12 @@ func downloadGitHubDocs(flags Flags) {
 
 		if containsConfig {
 			repositoryNav += fmt.Sprintf(
-				"    - '<b>%s</b>':\n",
+				"    - '%s':\n",
 				docsConfig.NavigatorName)
 		}
 		if !containsConfig {
 			repositoryNav += fmt.Sprintf(
-				"    - '<b>%s</b>':\n",
+				"    - '%s':\n",
 				repository.Name)
 		}
 
