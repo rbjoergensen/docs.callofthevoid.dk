@@ -1,5 +1,6 @@
 # Introduction
-Documentation based on markdown files purposefully written for this site and imported from git repositories.<br /><br />
+Documentation based on markdown files automatically gathered from GitHub repositories and structured. As well as static content written for this site.
+<br /><br />
 Work in progress...
 ## Todo
 - Refactor documentation so it doesn't look too shitty
