@@ -8,13 +8,13 @@ on:
     types:
       - docs-update
   schedule:
-    - cron: '0 06 * * *'
+    - cron: '0 06 * * *' # 06:00AM (UTC)
 
+# When multiple builds are triggered only run the latest one for each ref/branch
+# This is to avoid hitting the ratelimit on the GitHub api when finding markdown files
 concurrency: 
   group: ${{ github.ref }}
   cancel-in-progress: true
-
-
 
 jobs:
   calculate-version:
