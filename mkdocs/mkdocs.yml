@@ -1,7 +1,7 @@
 # https://www.mkdocs.org/user-guide/configuration/#documentation-layout
 site_name: CallOfTheVoid
 site_url: https://docs.callofthevoid.dk
-repo_url: https://github.com/rbjoergensen
+repo_url: https://github.com/rbjoergensen/docs.callofthevoid.dk
 edit_uri: ""
 extra:
   # Hide the Made with Material for MkDocs notice
@@ -17,10 +17,10 @@ theme: # https://github.com/squidfunk/mkdocs-material
     scheme: slate
     primary: teal
   features:
-    - navigation.instant
-    #- navigation.expand
     - toc.integrate
+    - navigation.instant
     - navigation.sections
+    #- navigation.expand
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
@@ -30,4 +30,4 @@ markdown_extensions:
 nav:
   - '<b>Introduction</b>': 'index.md'
   - '<b>Articles</b>': 
-    - 'Awesome Sauce': 'articles/awesomesauce.md'
+    - 'Traefik and Docker': 'articles/traefik-setup/article.md'
