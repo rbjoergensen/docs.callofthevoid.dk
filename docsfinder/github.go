@@ -73,6 +73,23 @@ func downloadGitHubDocs(flags Flags) {
 			}
 		}
 
+		if containsConfig {
+			if docsConfig.NavigatorName == "" {
+				log.Fatal(
+					fmt.Sprintf(
+						"Value of NavigatorName attribute for repository %s is %s",
+						repository.Name,
+						docsConfig.NavigatorName),
+				)
+			}
+
+			fmt.Println("  contains-config: true")
+			fmt.Println(fmt.Sprintf("  navigator-name:  %s", docsConfig.NavigatorName))
+			fmt.Println(fmt.Sprintf("  category:        %s", docsConfig.Category))
+		} else if !containsConfig {
+			fmt.Println("  contains-config: false")
+		}
+
 		mdSearch, err := CodeSearch(flags, repository, "extension:md")
 		if err != nil {
 			log.Fatal(err)
@@ -376,6 +393,10 @@ func GetRepositories(flags Flags) ([]Repository, error) {
 	var filteredRepositories []Repository
 
 	for _, repository := range repositories {
+		if repository.Name != "ado-tokens" {
+			continue
+		}
+
 		if flags.SkipArchived && repository.Archived {
 			continue
 		}
