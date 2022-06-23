@@ -393,10 +393,6 @@ func GetRepositories(flags Flags) ([]Repository, error) {
 	var filteredRepositories []Repository
 
 	for _, repository := range repositories {
-		if repository.Name != "ado-tokens" {
-			continue
-		}
-
 		if flags.SkipArchived && repository.Archived {
 			continue
 		}
