@@ -70,7 +70,7 @@ volumes:
   - "/traefik/usersfile:/traefikusers"
   - "/var/run/docker.sock:/var/run/docker.sock:ro"
 ```
-The usersfile contains a list of `name:hashed-password`. You can use a tool htpasswd or openssl for this.
+The usersfile contains a list of `name:hashed-password`. You can use a tool like htpasswd or openssl for this.
 ```
 admin:$apr1$i4cUyBZl$GzyVeKlwjB5UOSw2scq420
 user1:$apr1$CJ9ugIPG$yKSDt4ZkuNuz8NIyChsQP0
