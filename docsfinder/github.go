@@ -258,10 +258,10 @@ func GetContent(flags Flags, file File, repository Repository) (string, error) {
 	var fileContent FileContent
 
 	if err := json.Unmarshal(responseData, &fileContent); err != nil {
-		fmt.Println("failed to unmarshal:", err)
+		log.Fatal("failed to unmarshal:", err)
 	}
 
-	return fileContent.Content, nil
+	return fileContent.Content, err
 }
 
 type FileContent struct {
@@ -304,10 +304,10 @@ func CodeSearch(flags Flags, repository Repository, query string) ([]File, error
 	var files FileRoot
 
 	if err := json.Unmarshal(responseData, &files); err != nil {
-		fmt.Println("failed to unmarshal:", err)
+		log.Fatal("failed to unmarshal:", err)
 	}
 
-	return files.Items, nil
+	return files.Items, err
 }
 
 type FileRoot struct {
@@ -356,7 +356,7 @@ func GetRepositories(flags Flags) ([]Repository, error) {
 	var repositoryList []Repository
 
 	if err := json.Unmarshal(responseData, &repositoryList); err != nil {
-		fmt.Println("failed to unmarshal:", err)
+		log.Fatal("failed to unmarshal:", err)
 	}
 
 	repositories = append(repositories, repositoryList...)
@@ -384,7 +384,7 @@ func GetRepositories(flags Flags) ([]Repository, error) {
 		}
 
 		if err := json.Unmarshal(responseData, &repositoryList); err != nil {
-			fmt.Println("failed to unmarshal:", err)
+			log.Fatal("failed to unmarshal:", err)
 		}
 
 		repositories = append(repositories, repositoryList...)
@@ -408,7 +408,7 @@ func GetRepositories(flags Flags) ([]Repository, error) {
 		filteredRepositories = append(filteredRepositories, repository)
 	}
 
-	return filteredRepositories, nil
+	return filteredRepositories, err
 }
 
 type Repository struct {
