@@ -193,7 +193,7 @@ jobs:
         name: Create release
         if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/support/')
         with:
-          artifacts: ${{ github.workspace }}/site
+          artifacts: site_${{ needs.calculate-version.outputs.semVer }}.zip
           tag: ${{ needs.calculate-version.outputs.semVer }}
           omitBody: true
           token: ${{ secrets.GITHUB_TOKEN }}
