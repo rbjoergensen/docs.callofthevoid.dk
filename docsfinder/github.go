@@ -96,7 +96,7 @@ func downloadGitHubDocs(flags Flags) {
 		}
 
 		// GitHub rate limiting throws 403 if there's more than 30 calls per minute
-		time.Sleep(2 * time.Second)
+		time.Sleep(3 * time.Second)
 
 		if len(mdSearch) == 0 {
 			continue
